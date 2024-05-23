@@ -105,5 +105,3 @@ constraint pk_cmpid primary key(cmp_id),
 constraint fk_BPgroup_id foreign key(BPgroup_id) references BloodGroups(Group_id),
 constraint fk_receiveP_id foreign key(canreceiveP_id) references BloodGroups(Group_id)
 );
-
-

@@ -1,3 +1,4 @@
+
 CREATE PROCEDURE InsertDonor (
   @DonorCNIC varchar(50),
   @BloodGroupId int,
