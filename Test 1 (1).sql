@@ -65,14 +65,12 @@ create table BloodUnits(
 BloodUnit_id varchar(5), --pk
 Blood_Group varchar(3) check(Blood_Group in('A+','O+','B+','AB+','A-','O-','B-','AB-')),
 BloodCell_id tinyint, --fk
-BloodBank_Id int,--fk
 backup_BloodBank_Id int,
 Donor_Id varchar(13) check (LEN(Donor_id) = 13 AND Donor_id LIKE '[1-9][0-9-]%' AND Donor_id NOT LIKE '%[^0-9-]%'),--fk
 Storage_Date date default (getdate()),
 Expiration_Date date,
 constraint pk_bloodUnit_id primary key(BloodUnit_id),
 constraint fk_BloodCellType_forUnit foreign key (BloodCell_id) references BloodCellTypes(BloodCell_id),
-constraint fk_Bankid_forUnit foreign key (BloodBank_Id)  references BloodBanks(License_id) on delete cascade,
 constraint fk_Bankid_forUnit_backup foreign key (backup_BloodBank_Id)  references Backup_BloodBanks(backup_License_id) on delete cascade,
 constraint fk_Donorid_forUnit foreign key  (Donor_Id)  references Donors(CNIC) on delete set null
 );
