@@ -2,15 +2,6 @@ create database Project
 go
 use Project
 go
-create table Cell_Number(
-CellNo_Id smallint, --pk
-Number bigint,
-Donor_CNIC varchar(13) check (LEN(Donor_CNIC) = 13 AND Donor_CNIC LIKE '[1-9][0-9-]%' AND Donor_CNIC NOT LIKE '%[^0-9-]%'), --fk
-constraint pk_cellNo primary key (CellNo_Id),
-constraint fk_donor_id foreign key (Donor_CNIC) references Donors(CNIC) on delete cascade
-);
-go
-
 create table Donors
 (
 CNIC varchar(13) CHECK (LEN(CNIC) = 13 AND CNIC LIKE '[1-9][0-9-]%' AND CNIC NOT LIKE '%[^0-9-]%'),--pk
@@ -23,6 +14,15 @@ Eligible varchar(3) check (Eligible in ('Yes','No')),
 BloodType varchar(5) check(BloodType in('A+','O+','B+','AB+','A-','O-','B-','AB-')),
 constraint pk_donor_id primary key (CNIC)
 );
+go
+create table Cell_Number(
+CellNo_Id smallint, --pk
+Number bigint,
+Donor_CNIC varchar(13) check (LEN(Donor_CNIC) = 13 AND Donor_CNIC LIKE '[1-9][0-9-]%' AND Donor_CNIC NOT LIKE '%[^0-9-]%'), --fk
+constraint pk_cellNo primary key (CellNo_Id),
+constraint fk_donor_id foreign key (Donor_CNIC) references Donors(CNIC) on delete cascade
+);
+
 go
 
 create table Blood_Samples
