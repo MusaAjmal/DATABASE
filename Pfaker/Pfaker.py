@@ -1,6 +1,9 @@
 from faker import Faker
 from DonorFaker.Donor_Faker import DonorFaker
 from faker.providers import DynamicProvider
+import sys
+sys.path.append(r'C:\Users\gng\Desktop\Project\DonorFaker\Donor_Faker.py')
+print(sys.path)
 
 class patientFaker:
     
