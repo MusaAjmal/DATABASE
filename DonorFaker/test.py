@@ -72,3 +72,7 @@ class DonorFaker:
         return donor_data
 
 
+donor_faker=DonorFaker()
+donor=donor_faker.generate_donor()
+cnic=donor['CNIC']
+print(cnic)
