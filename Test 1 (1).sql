@@ -6,7 +6,6 @@ create table Donors
 (
 CNIC varchar(13) CHECK (LEN(CNIC) = 13 AND CNIC LIKE '[1-9][0-9-]%' AND CNIC NOT LIKE '%[^0-9-]%'),--pk
 Donor_Name varchar(50),
-BloodGroup_Id int,
 Date_Of_Birth date,
 Province varchar(50),
 City varchar(50),
