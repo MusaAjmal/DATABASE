@@ -12,7 +12,7 @@ class NumberModifier:
         return modified_number
 
     def generate_large_number(self, min_value=10000000000, max_value=99999999999):
-        return self.faker.random_int(min=min_value, max=max_value)
+        return self.faker.unique.random_int(min=min_value, max=max_value)
     
 #Test Object
 '''number_modifier = NumberModifier(3)

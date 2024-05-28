@@ -21,7 +21,6 @@ Donor_CNIC varchar(13) check (LEN(Donor_CNIC) = 13 AND Donor_CNIC LIKE '[1-9][0-
 constraint pk_cellNo primary key (CellNo_Id),
 constraint fk_donor_id foreign key (Donor_CNIC) references Donors(CNIC) on delete cascade
 );
-
 go
 
 create table Blood_Samples
@@ -106,12 +105,10 @@ create table Transfusions(
 Transfusion_id int, --pk
 patient_id varchar(13) check (LEN(patient_id) = 13 AND patient_id LIKE '[1-9][0-9-]%' AND patient_id NOT LIKE '%[^0-9-]%'),--fk
 Transfusion_Date date default (getdate()),
-BloodUnit_id varchar(5),
-backup_BloodUnit_id varchar(5)
+backup_BloodUnit_id varchar(5),
 constraint pk_tranfusionid primary key(Transfusion_id),
 constraint fk_patient_id foreign key (patient_id) references Patients(CNIC),
-constraint fk_bloodbank_id foreign key(BloodUnit_id) references BloodUnits(BloodUnit_id) on delete set null,
-constraint fk_bloodbank_id_backup foreign key(backup_BloodUnit_id) references Backup_BloodUnits(backup_BloodUnit_id) on delete cascade
+constraint fk_bloodbank_id_backuptransfusion foreign key(backup_BloodUnit_id) references Backup_BloodUnits(backup_BloodUnit_id) on delete cascade
 );
 go
 create table BloodGroups(
