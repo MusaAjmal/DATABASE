@@ -1,5 +1,5 @@
 from faker import Faker
-from DonorFaker.Donor_Faker import DonorFaker
+from Donor_Faker import DonorFaker
 from faker.providers import DynamicProvider
 
 
