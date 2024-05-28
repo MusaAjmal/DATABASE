@@ -21,5 +21,8 @@ class patientFaker:
 
         
 #test object
+'''
 patient=patientFaker()
 print(patient.name)
+
+'''

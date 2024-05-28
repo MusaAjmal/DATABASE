@@ -71,7 +71,7 @@ class BloodBanks:
         bank_data['Name'] = self.faker.hospital_name()
         bank_data['Capacity'] = 0
         bank_data['City'] = self.faker.Cities()
-        bank_data['Street'] = self.faker.street_address(bank_data['City'])
+        bank_data['Street'] = self.faker.unique.street_address(bank_data['City'])
         bank_data['Postal_Code'] = self.faker.Postal_Codes(bank_data['City'])
         return bank_data
     
