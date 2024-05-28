@@ -1,24 +1,21 @@
 from faker import Faker
-from Donor_Faker import DonorFaker
 
 class NumberModifier:
     def __init__(self, predefined_digits):
-        self.predefined_digits = predefined_digits
+        self.predefined_digits = str(predefined_digits)
         self.faker = Faker()
-        instance=DonorFaker()
-        donor=instance.generate_donor()
-        self.cnic=donor['CNIC']
-
-    def set_first_three_digits(self, large_number):
-        predefined_str = str(self.predefined_digits)
-        large_number_str = str(large_number)
-
         
-        modified_number_str = predefined_str + large_number_str[1:]
-
+    def set_first_digits(self, large_number):
+        large_number_str = str(large_number)
+        modified_number_str = self.predefined_digits + large_number_str[len(self.predefined_digits):]
         modified_number = int(modified_number_str)
         return modified_number
 
-    def generate_large_number(self, min_value=11111111111, max_value=99999999999):
+    def generate_large_number(self, min_value=10000000000, max_value=99999999999):
         return self.faker.random_int(min=min_value, max=max_value)
     
+#Test Object
+'''number_modifier = NumberModifier(3)
+large_number = number_modifier.generate_large_number()
+modified_number = number_modifier.set_first_digits(large_number)
+print(modified_number)'''

@@ -16,7 +16,7 @@ constraint pk_donor_id primary key (CNIC)
 go
 create table Cell_Number(
 CellNo_Id smallint, --pk
-Number bigint,
+Number bigint unique,
 Donor_CNIC varchar(13) check (LEN(Donor_CNIC) = 13 AND Donor_CNIC LIKE '[1-9][0-9-]%' AND Donor_CNIC NOT LIKE '%[^0-9-]%'), --fk
 constraint pk_cellNo primary key (CellNo_Id),
 constraint fk_donor_id foreign key (Donor_CNIC) references Donors(CNIC) on delete cascade
@@ -35,9 +35,9 @@ constraint fk_donorid_forSample foreign key (Donor_id) references Donors(CNIC) o
 go
 create table BloodBanks(
 License_id int,--pk
-Telephone_Number bigint,
+Telephone_Number bigint unique,
 Name varchar(50),
-Capacity int check (capacity > 0),
+Capacity int check (Capacity > 0),
 City varchar(50),
 Street varchar (100),
 Postal_Code int,
@@ -46,8 +46,9 @@ constraint pk_Bankid primary key(License_id)
 go
 create table Backup_BloodBanks(
 backup_License_id int,--pk
-Telephone_Number bigint,
+Telephone_Number bigint unique,
 Name varchar(50),
+Capacity int check(Capacity > 0),
 City varchar(50),
 Street varchar (100),
 Postal_Code int,
@@ -64,11 +65,14 @@ create table BloodUnits(
 BloodUnit_id varchar(5), --pk
 Blood_Group varchar(3) check(Blood_Group in('A+','O+','B+','AB+','A-','O-','B-','AB-')),
 BloodCell_id tinyint, --fk
+bloodbank_id int,
 backup_BloodBank_Id int,
 Donor_Id varchar(13) check (LEN(Donor_id) = 13 AND Donor_id LIKE '[1-9][0-9-]%' AND Donor_id NOT LIKE '%[^0-9-]%'),--fk
 Storage_Date date default (getdate()),
 Expiration_Date date,
+unit_status varchar (15) check (unit_status in ('Available','Expired')),
 constraint pk_bloodUnit_id primary key(BloodUnit_id),
+constraint fk_bloodbank_id foreign key(bloodbank_id) references BloodBanks(License_id) on delete set null,
 constraint fk_BloodCellType_forUnit foreign key (BloodCell_id) references BloodCellTypes(BloodCell_id),
 constraint fk_Bankid_forUnit_backup foreign key (backup_BloodBank_Id)  references Backup_BloodBanks(backup_License_id) on delete cascade,
 constraint fk_Donorid_forUnit foreign key  (Donor_Id)  references Donors(CNIC) on delete set null
@@ -78,14 +82,14 @@ create table Backup_BloodUnits(
 backup_BloodUnit_id varchar(5), --pk
 Blood_Group varchar(3) check(Blood_Group in('A+','O+','B+','AB+','A-','O-','B-','AB-')),
 BloodCell_id tinyint, --fk
-BloodBank_Id int, --fk
+bloodbank_id int,
 backup_bloodbank_id int,
 Donor_Id varchar(13) check (LEN(Donor_id) = 13 AND Donor_id LIKE '[1-9][0-9-]%' AND Donor_id NOT LIKE '%[^0-9-]%'),--fk
 Storage_Date date default (getdate()),
 Expiration_Date date,
 constraint pk_bloodUnit_id_backup primary key(backup_BloodUnit_id),
+constraint fk_bloodbank_id_forbackup foreign key (bloodbank_id) references BloodBanks(License_id),
 constraint fk_bloodcelltype_forunit_backup foreign key (bloodcell_id) references bloodcelltypes(bloodcell_id),
-constraint fk_backup_bloodbankid_forunit_nobackup foreign key (bloodbank_id) references bloodbanks(license_id) on delete set null,
 constraint fk_bloodbankid_forunit_backup foreign key (backup_bloodbank_id) references backup_bloodbanks(backup_license_id) on delete cascade,
 constraint fk_donorid_forunit_backup foreign key (donor_id) references donors(cnic) on delete set null
 );
@@ -107,7 +111,7 @@ backup_BloodUnit_id varchar(5)
 constraint pk_tranfusionid primary key(Transfusion_id),
 constraint fk_patient_id foreign key (patient_id) references Patients(CNIC),
 constraint fk_bloodbank_id foreign key(BloodUnit_id) references BloodUnits(BloodUnit_id) on delete set null,
-constraint fk_bloodbank_id_backup foreign key(backup_BloodUnit_id) references Backup_BloodUnits(backup_BloodUnit_id)
+constraint fk_bloodbank_id_backup foreign key(backup_BloodUnit_id) references Backup_BloodUnits(backup_BloodUnit_id) on delete cascade
 );
 go
 create table BloodGroups(
