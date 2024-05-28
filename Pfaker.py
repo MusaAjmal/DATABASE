@@ -20,6 +20,6 @@ class patientFaker:
         self.disease_emergency= self.faker.disease()
 
         
-
+#test object
 patient=patientFaker()
-print(patient.disease_emergency)
+print(patient.name)
