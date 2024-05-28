@@ -66,7 +66,7 @@ def insertDonors():
    # cursor.close()
     #conn.close()
 
-insertDonors()
+#insertDonors() Dangerous
 ###########   Contact Number Insertion #################
 contactData=[]
 number_modifier = NumberModifier(3)
@@ -97,4 +97,5 @@ def insertContacts():
         conn.commit()
     cursor.close()
     conn.close()
-insertContacts()
+#insertContacts() dangerous!!!
+#####################################
