@@ -16,7 +16,5 @@ class BloodSample:
         self.results = self.faker.Results()
         
 
-sample = BloodSample()
-print(sample.sample_id)
-print(sample.results)
+
 
