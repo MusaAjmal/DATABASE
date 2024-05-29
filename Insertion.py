@@ -26,14 +26,14 @@ cursor=conn.cursor()
 ######### DONOR INSERTION ###########
 
 Donor_data=[]  # data insertion list for donor entity
-Cniclist_Donor=[]
+Cniclist_Donor=[] #saving foreign key for donor
 
 donorfaker=DonorFaker() # object for donor entity 
 def Donor_Generator():
 
     for i in range (1, 2000):
         data=donorfaker.generate_donor()
-        Cniclist_Donor.append((data['CNIC']))
+        
         Donor_data.append((
         data['CNIC'],
         data['Donor_Name'],
@@ -46,14 +46,6 @@ def Donor_Generator():
         ))
     return Donor_data
 Donor_data= Donor_Generator() ## appending data to list
-f1= Faker()  # faker to randomize foreign key (donor)
-cnicp=DynamicProvider(
-    provider_name='cnic',
-    elements=Cniclist_Donor
-)
-f1.add_provider(cnicp)
-
-
 def insertDonors():
     insert_query_for_Donor = """
     INSERT INTO Donors (CNIC, Donor_Name, Date_Of_Birth, Province, City, Eligible, BloodType)
@@ -63,10 +55,18 @@ def insertDonors():
         cursor.execute(insert_query_for_Donor, row)
         conn.commit()
 
-   # cursor.close()
+    #cursor.close()
     #conn.close()
 
-#insertDonors() Dangerous
+#insertDonors()  ##DANGER
+def getkeyDonor():
+    query="""select cnic from donors"""
+    cursor.execute(query)
+    res = [str(row[0]).strip(',') for row in cursor.fetchall()]
+    return res
+
+Cniclist_Donor=getkeyDonor()
+
 ###########   Contact Number Insertion #################
 contactData=[]
 number_modifier = NumberModifier(3)
@@ -97,5 +97,5 @@ def insertContacts():
         conn.commit()
     cursor.close()
     conn.close()
-#insertContacts() dangerous!!!
+insertContacts() 
 #####################################
