@@ -4,6 +4,7 @@ from faker.providers import DynamicProvider
 from datetime import datetime
 from Donor_Faker import DonorFaker
 from contact_number import NumberModifier
+from BloodSample_for_Donor import BloodSample
 
 Driver_Name = 'SQL SERVER'
 Server_Name = 'MUSA\SQLEXPRESS'
@@ -65,7 +66,7 @@ def getkeyDonor():
     res = [str(row[0]).strip(',') for row in cursor.fetchall()]
     return res
 
-Cniclist_Donor=getkeyDonor()
+Cniclist_Donor=getkeyDonor() #DANGER WEWOWEWO
 
 ###########   Contact Number Insertion #################
 contactData=[]
@@ -97,5 +98,27 @@ def insertContacts():
         conn.commit()
     cursor.close()
     conn.close()
-insertContacts() 
-#####################################
+#insertContacts()  ##DANGER WEWOWEWO
+################Blood SAMPLE#####################
+SampleList=[]
+num_donors=len(Cniclist_Donor)
+def sampleGenerator():
+    for i in range(1,50000):
+        
+        sample=BloodSample()
+        SampleList.append((sample.sample_id,Cniclist_Donor[i % num_donors],sample.results))
+    return SampleList
+
+SampleList= sampleGenerator()
+for wo in SampleList:
+    print(wo)
+
+def sampleinsert():
+    query="""insert into Blood_Samples (Sample_id,Donor_id,Result) values (?,?,?)"""
+    for row in SampleList:
+        cursor.execute(query,row)
+        conn.commit()
+    cursor.close()
+    conn.close()
+
+#sampleinsert() #DANGER WEWOWEWO
