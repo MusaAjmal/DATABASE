@@ -23,8 +23,11 @@ go
 delete from Donors
 delete from Cell_Number
 go
+delete from blood_samples
 select * from donors
-select * from BloodSamples
+select * from Blood_Samples
+
+
 select * from Cell_Number
 
 
