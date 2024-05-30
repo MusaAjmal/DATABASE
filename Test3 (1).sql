@@ -1,4 +1,14 @@
 use Project
+
+-- Declare the input datetime
+DECLARE @DateTimeInput DATETIME = getdate();
+
+-- Assume the input datetime is in Australia/Sydney time zone, convert to UTC first, then to another time zone
+SELECT @DateTimeInput AT TIME ZONE 'AUS Eastern Standard Time' AT TIME ZONE 'UTC' AS ConvertedToUTC,
+       @DateTimeInput AT TIME ZONE 'AUS Eastern Standard Time' AT TIME ZONE 'Pacific Standard Time' AS ConvertedToPST;
+
+
+
 SELECT 
   o.name AS Procedure_Name,
   OBJECT_DEFINITION(o.[object_id]) AS Procedure_Definition
@@ -48,4 +58,16 @@ WHERE
     D.Eligible = 'Yes' and City ='Lahore'
 ORDER BY
     D.CNIC;
+go
+SELECT 
+    d.Donor_Name,
+    bs.Result
+FROM 
+    Donors d
+JOIN 
+    Blood_Samples bs
+ON 
+    d.CNIC = bs.Donor_id
+WHERE 
+    bs.Result = '+';
 
