@@ -23,6 +23,11 @@ go
 delete from Donors
 delete from Cell_Number
 go
+select * from donors
+select * from BloodSamples
+select * from Cell_Number
+
+
 SELECT
     D.CNIC,
     D.Donor_Name,
