@@ -6,7 +6,7 @@ class Donor_insert:
 
     @staticmethod
     def GenerateDonor(donor_object,datalist):
-        for i in range (1,2000):
+        for i in range (1,1000):
             temp= donor_object.generate_donor()
             datalist.append((
                 temp['CNIC'],

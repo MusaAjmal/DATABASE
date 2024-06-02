@@ -8,16 +8,22 @@ class patientFaker:
     def __init__(self):
         self.faker=Faker()
         fakerDonor=DonorFaker()
-        donordata=fakerDonor.generate_donor()
-        self.cnic=donordata['CNIC']
-        self.name=donordata['Donor_Name']
-        self.bg=donordata['BloodType']
+        self.donordata=fakerDonor.generate_donor()
+        
         diseaseprovider=DynamicProvider(
             provider_name="disease",
             elements=['Thalassemia','Leukemia','Lymphoma','Multiple Myeloma','Hemophilia','Red Blood','Plasma','Platelets']
         )
         self.faker.add_provider(diseaseprovider)
-        self.disease_emergency= self.faker.disease()
+       
+    
+    def insert(self):
+        data= {}
+        data['CNIC']= self.donordata['CNIC']
+        data['Name']=self.donordata['Donor_Name']
+        data['BG']=self.donordata['BloodType']
+        data['disease']= self.faker.disease()
+        return data
 
         
 #test object

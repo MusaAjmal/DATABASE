@@ -11,39 +11,57 @@ unit_status varchar (15) check (unit_status in ('Available','Expired')),
 '''
 from faker import Faker
 from faker.providers import DynamicProvider
+import random
+import string
 from datetime import date,timedelta
 from CellTypes import CellTypes
 
 class BloodUnits:
     def __init__(self):
         self.faker=Faker()
-        self.unit_id= self.faker.random_int(min=1111111111, max=2147483647)
-        self.storage_date=date.today()
-        cells=CellTypes()
-        self.type= cells.generate_cell_type()
-        if(self.type== 1):
-            self.expiry_date=date.today() + timedelta(days=42)
-        elif (self.type== 2):
-            self.expiry_date=date.today() + timedelta(days=365)
-        elif (self.type== 3):
-            self.expiry_date=date.today() + timedelta(days=5)
-        else:
-            self.expiry_date= ''
-            print("Error Type Not Identified")
 
         blood_group_provider = DynamicProvider(
             provider_name="bloodgroup",
             elements=['A+', 'O+', 'B+', 'AB+', 'A-', 'O-', 'B-', 'AB-']
         )
         self.faker.add_provider(blood_group_provider)
-        self.blood_group=self.faker.bloodgroup()
-        if(date.today == self.expiry_date):
-             self.status='Expired'
-        else:
-            self.status='Available'
+        
 
-
+    def generate_alphanumeric_string(self,length=5, current_string=''):
+        characters = string.ascii_uppercase + string.digits
+        if len(current_string) == length:
+            return current_string
+        return self.generate_alphanumeric_string(length, current_string + random.choice(characters))
        
+    def insert(self):
+        data= {}
+        
+        data['id']=self.generate_alphanumeric_string(5,'')
+        curr=date.today()
+        data['storagedate']=curr.strftime("%Y-%m-%d")
+        cells=CellTypes()
+        #self.type= cells.generate_cell_type()
+        data['type']=cells.generate_cell_type()
+        if(data['type']== 1):
+            exp=date.today() + timedelta(days=42)
+            data['expirydate']=exp.strftime("%Y-%m-%d")
+        elif (data['type']== 2):
+            exp=date.today() + timedelta(days=365)
+            data['expirydate']=exp.strftime("%Y-%m-%d")
+        elif (data['type']== 3):
+            exp=date.today() + timedelta(days=5)
+            data['expirydate']=exp.strftime("%Y-%m-%d")
+            
+        else:
+            data['expirydate']= ''
+            print("Error Type Not Identified")
+        data['bg']=self.faker.bloodgroup()
+        if(date.today == data['expirydate']):
+             data['status']='Expired'
+        else:
+            data['status']='Available'
+        return data
+    
 
     def display_attributes(self):
         print(f"BloodUnit_id: {self.unit_id}")
@@ -55,4 +73,5 @@ class BloodUnits:
 '''
 units=BloodUnits()
 units.display_attributes()
+
 '''

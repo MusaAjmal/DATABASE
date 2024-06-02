@@ -15,7 +15,7 @@ class ContactAppender:
     
     @staticmethod
     def generateContact(datalist, contact, foreignkey_list):
-        for i in range(1, 30000):
+        for i in range(1,2000):
             large_number = contact.generate_large_number()
             num_donors = len(foreignkey_list)
             modified_number = contact.set_first_digits(large_number)  # Number

@@ -14,7 +14,7 @@ class SampleAppender:
     @staticmethod
     def generateSamples(datalist, obj, foreignkey_list):
         count = len(foreignkey_list)
-        for i in range(1, 50000):
+        for i in range(1,1500):
             temp = obj.insert()
             datalist.append((
                 temp["id"],

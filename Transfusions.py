@@ -11,12 +11,16 @@ from datetime import date
 class Transfusions:
     def __init__(self):
         self.faker=Faker()
-        self.transfusion_id=self.faker.random_int(min=1111111111, max=2147483647)
-        self.transfusion_date=date.today()
+        
+    def generate(self):
+        data={}
+        data['id']=self.faker.unique.random_int(min=1111111111, max=2147483647)
+        start=date.today()
+        data['startdate']=start.strftime("%Y-%m-%d")
+        return data
+
 
 #Test Object
-'''
-t= Transfusions()
-print(t.transfusion_id)
-print(t.transfusion_date)
-'''
+
+
+

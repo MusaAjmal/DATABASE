@@ -96,6 +96,7 @@ go
 create table Patients
 (
 CNIC varchar (13) check (LEN(CNIC) = 13 AND CNIC LIKE '[1-9][0-9-]%' AND CNIC NOT LIKE '%[^0-9-]%'), --pk
+name varchar(50),
 Blood_Group varchar(3) check(Blood_Group in('A+','O+','B+','AB+','A-','O-','B-','AB-')),
 Disease_or_Emergency varchar(100),
 constraint pk_patienceCNIC primary key(CNIC)
@@ -105,8 +106,10 @@ create table Transfusions(
 Transfusion_id int, --pk
 patient_id varchar(13) check (LEN(patient_id) = 13 AND patient_id LIKE '[1-9][0-9-]%' AND patient_id NOT LIKE '%[^0-9-]%'),--fk
 Transfusion_Date date default (getdate()),
+bloodunit_id varchar (5),
 backup_BloodUnit_id varchar(5),
 constraint pk_tranfusionid primary key(Transfusion_id),
+constraint fk_bankid foreign key(bloodunit_id) references BloodUnits(BloodUnit_id),
 constraint fk_patient_id foreign key (patient_id) references Patients(CNIC),
 constraint fk_bloodbank_id_backuptransfusion foreign key(backup_BloodUnit_id) references Backup_BloodUnits(backup_BloodUnit_id) on delete cascade
 );
@@ -133,4 +136,3 @@ constraint pk_cmpid primary key(cmp_id),
 constraint fk_BPgroup_id foreign key(BPgroup_id) references BloodGroups(Group_id),
 constraint fk_receiveP_id foreign key(canreceiveP_id) references BloodGroups(Group_id)
 );
-
