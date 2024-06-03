@@ -1,14 +1,3 @@
-'''
-BloodUnit_id varchar(5), --pk
-Blood_Group varchar(3) check(Blood_Group in('A+','O+','B+','AB+','A-','O-','B-','AB-')),
-BloodCell_id tinyint, --fk
-bloodbank_id int, --fk
-backup_BloodBank_Id int, --fk
-Donor_Id varchar(13) check (LEN(Donor_id) = 13 AND Donor_id LIKE '[1-9][0-9-]%' AND Donor_id NOT LIKE '%[^0-9-]%'),--fk
-Storage_Date date default (getdate()),
-Expiration_Date date,
-unit_status varchar (15) check (unit_status in ('Available','Expired')),
-'''
 from faker import Faker
 from faker.providers import DynamicProvider
 import random

@@ -10,7 +10,7 @@ class CellTypes:
             3: "Platelets"
         }
         
-        # Create a dynamic provider for cell types
+       
         cell_type_provider = DynamicProvider(
             provider_name="cell_type",
             elements=list(self.cell_types.keys())

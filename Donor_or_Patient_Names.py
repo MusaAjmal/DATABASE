@@ -1,6 +1,6 @@
 from Scraper import PakistaniNamesScraper
 import itertools
-
+# using a Website to  scrape Pakistani male and female names to generate more than 2k names
 class PakistaniNamesGenerator:
     boys_url = "https://pakistaninames.wordpress.com/pakistani-boys-names/"
     girls_url = "https://pakistaninames.wordpress.com/pakistani-girls-names/"
