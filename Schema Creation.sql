@@ -136,3 +136,5 @@ constraint pk_cmpid primary key(cmp_id),
 constraint fk_BPgroup_id foreign key(BPgroup_id) references BloodGroups(Group_id),
 constraint fk_receiveP_id foreign key(canreceiveP_id) references BloodGroups(Group_id)
 );
+-- very very imp run this code after schema creation 
+insert into BloodCellTypes values(1,'Red Blood'),(2,'Plasma'),(3,'Platelets')

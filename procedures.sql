@@ -1,3 +1,4 @@
+--procedure to insert data into bloodunits (donation of blood)
 CREATE PROCEDURE DonateBloodToBank
     @Donor_CNIC varchar(13),
     @Blood_Bank_License_id int,
@@ -31,7 +32,10 @@ END
 exec donatebloodtobank '1165768819974', 1, 'A+', 1, '2024-06-30','dqd21';
 
 go
+--Test
 select * from Donors
+go
+-- Transfusion must be based on patients requirements
 CREATE PROCEDURE performbloodtransfusion
     @patientcnic VARCHAR(13),
     @transfusionid INT
@@ -76,12 +80,12 @@ BEGIN
         PRINT 'Patient not found or blood group information missing.';
     END
 END;
-
+--TEST
 select * from Patients
 exec performbloodtransfusion '1177946719158',3129318
 
-
-----
+go
+---- a procedure to return amount of blood units in all banks of specific group
 CREATE PROCEDURE GetBloodUnitsByBankAndGroup
     @Blood_Group VARCHAR(3),
 	@city varchar(50)
@@ -94,9 +98,11 @@ BEGIN
     INNER JOIN BloodUnits bu ON bb.License_id = bu.bloodbank_id
     WHERE bu.Blood_Group = @Blood_Group and bb.City=@city
 END;
+--Test
 select * from BloodBanks
 exec GetBloodUnitsByBankAndGroup 'B+','Lahore'
 GO
+--A simple Report Procedure to get donor details
 CREATE PROCEDURE GetDonorDetailsByBloodGroupAndCity
     @Blood_Group VARCHAR(5),
     @City VARCHAR(50)
@@ -118,5 +124,52 @@ BEGIN
     WHERE Donors.BloodType = @Blood_Group
       AND Donors.City = @City;
 END;
-
+--TEST
 exec GetDonorDetailsByBloodGroupAndCity 'A+','Lahore'
+go
+-- A procedure that allows a  patient to receive blood according to its requirements and add its info in Transufion Table
+CREATE PROCEDURE PerformBloodTransfusion
+    @patientCNIC VARCHAR(13)
+AS
+BEGIN
+    DECLARE @patientBloodGroup VARCHAR(3)
+    DECLARE @transfusionID INT
+    
+    -- Get patient's blood group
+    SELECT @patientBloodGroup = Blood_Group
+    FROM Patients
+    WHERE CNIC = @patientCNIC
+    
+    IF @patientBloodGroup IS NOT NULL
+    BEGIN
+        -- Determine compatible blood groups
+        DECLARE @compatibleBloodGroups TABLE (GroupName VARCHAR(3))
+        
+        INSERT INTO @compatibleBloodGroups (GroupName)
+        SELECT BG2.GroupName
+        FROM BloodGroups BG1
+        INNER JOIN BloodGroup_Compatibilities BC ON BG1.Group_id = BC.group_id
+        INNER JOIN BloodGroups BG2 ON BC.canreceive_id = BG2.Group_id
+        WHERE BG1.GroupName = @patientBloodGroup
+        
+        -- Get the transfusion ID
+        SET @transfusionID = (SELECT ISNULL(MAX(Transfusion_id), 0) + 1 FROM Transfusions)
+        
+        -- Select available compatible blood units
+        INSERT INTO Transfusions (Transfusion_id, patient_id, Transfusion_Date, bloodunit_id)
+        SELECT @transfusionID, @patientCNIC, GETDATE(), BU.BloodUnit_id
+        FROM BloodUnits BU
+        INNER JOIN @compatibleBloodGroups CBG ON BU.Blood_Group = CBG.GroupName
+        WHERE BU.unit_status = 'Available'
+        ORDER BY BU.Expiration_Date ASC
+        
+        -- Mark the selected blood unit as used
+        UPDATE BloodUnits
+        SET unit_status = 'Expired'
+        WHERE BloodUnit_id = (SELECT TOP 1 BloodUnit_id FROM Transfusions WHERE patient_id = @patientCNIC)
+    END
+    ELSE
+    BEGIN
+        PRINT 'Patient not found or blood group information missing.'
+    END
+END

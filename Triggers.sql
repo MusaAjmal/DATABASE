@@ -1,3 +1,4 @@
+-- A trigger to make sure that a person can donate blood once per 3 months
 CREATE TRIGGER update_eligibility
 ON Blood_Samples
 AFTER INSERT
@@ -12,7 +13,7 @@ BEGIN
     WHERE inserted.Result = '+';
 END;
 go
-----------------------------------
+--backup/history table in case data gets deleted
 CREATE TRIGGER trg_DeleteBloodBank_MoveToBackup
 ON BloodBanks
 AFTER DELETE
@@ -25,7 +26,7 @@ BEGIN
     SELECT License_id, Telephone_Number, Name, Capacity, City, Street, Postal_Code
     FROM deleted;
 END;
----------------------
+--Making sure that expired blood unit is no obtainable 
 go
 CREATE TRIGGER set_unit_unavailable
 ON BloodUnits
@@ -46,6 +47,7 @@ set Expiration_Date=getdate()
 where BloodUnit_id='07CJI'
 
 go
+-- backup table for blood unit
 CREATE TRIGGER trg_UpdateBackupBloodUnit
 ON BloodUnits
 AFTER DELETE
@@ -79,12 +81,13 @@ BEGIN
     
 END;
 go
+--  Update the status of certain units to 'Expired' after each transfusion 
 CREATE TRIGGER trg_AfterInsertTransfusions_UpdateStatus
 ON Transfusions
 AFTER INSERT
 AS
 BEGIN
-    -- Update the status of certain units to 'Expired'
+    
     UPDATE BloodUnits
     SET unit_status = 'Expired'
     WHERE BloodUnit_id IN (
@@ -93,6 +96,7 @@ BEGIN
     );
 END;
 go
+--only non-expired/ non-used blood units must be obtainable
 CREATE TRIGGER trg_BeforeInsertTransfusions_CheckParentStatus
 ON Transfusions
 INSTEAD OF INSERT
@@ -128,15 +132,4 @@ select * from Transfusions
 insert into Transfusions values(12313164,'1233336869498','2024-05-31','T6DPG',null)
 --------------------------------------
 
-SELECT 
-    BloodUnit_id,
-    Blood_Group,
-    Donor_Id,
-    Storage_Date,
-    Expiration_Date,
-    unit_status
-FROM 
-    BloodUnits
-WHERE 
-    Storage_Date >= DATEADD(month, DATEDIFF(month, 0, GETDATE()), 0)
-    AND Storage_Date < DATEADD(month, DATEDIFF(month, 0, GETDATE()) + 1, 0);
+

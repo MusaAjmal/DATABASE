@@ -76,6 +76,7 @@ INSERT INTO BloodGroup_Compatiblities_for_Plasma (cmp_id, BPgroup_id, canreceive
 (17, 4, 4), -- AB+ to AB+
 (18, 4, 8); -- AB+ to AB-
 go
+--Testing
 SELECT 
     p.GroupName AS PatientBloodGroup,
     d.GroupName AS DonorBloodGroup
