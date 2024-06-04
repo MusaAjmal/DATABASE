@@ -10,10 +10,12 @@ CREATE VIEW BloodUnitDetails AS
 SELECT 
     BloodUnits.BloodUnit_id AS UnitID,
     Donors.CNIC AS DonorCNIC,
+	Donors.Donor_Name as DonorName,
     BloodUnits.bloodbank_id AS BankID,
+	BloodBanks.Name as BankName,
     BloodCellTypes.BloodCell_Type AS CellType,
-    BloodUnits.Storage_Date AS StartDate,
-    BloodUnits.Expiration_Date AS EndDate,
+    BloodUnits.Storage_Date AS DonationDate,
+    BloodUnits.Expiration_Date AS BloodExpiryDate,
     BloodUnits.unit_status AS Status
 FROM 
     BloodUnits
