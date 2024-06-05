@@ -1,0 +1,5 @@
+Pakistani names are scraped from a website to generate more than 2000 names.
+the files ending with 'db' are the files used to insert data into database for certain entity
+other files are just to create sample data for entities .
+if anyone want to insert data only instead to altering all other logic simply run the files ending with db.
+Thank you for using my project. <3
