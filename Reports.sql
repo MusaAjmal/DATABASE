@@ -1,3 +1,4 @@
+
 --view to count number of avaiable blood types
 SELECT bg.GroupName AS BloodType, COUNT(*) AS UnitsAvailable
 FROM BloodUnits bu
@@ -9,10 +10,12 @@ CREATE VIEW BloodUnitDetails AS
 SELECT 
     BloodUnits.BloodUnit_id AS UnitID,
     Donors.CNIC AS DonorCNIC,
+	Donors.Donor_Name as DonorName,
     BloodUnits.bloodbank_id AS BankID,
+	BloodBanks.Name as BankName,
     BloodCellTypes.BloodCell_Type AS CellType,
-    BloodUnits.Storage_Date AS StartDate,
-    BloodUnits.Expiration_Date AS EndDate,
+    BloodUnits.Storage_Date AS DonationDate,
+    BloodUnits.Expiration_Date AS BloodExpiryDate,
     BloodUnits.unit_status AS Status
 FROM 
     BloodUnits
@@ -22,7 +25,8 @@ JOIN
     BloodCellTypes ON BloodUnits.BloodCell_id = BloodCellTypes.BloodCell_id
 LEFT JOIN 
     BloodBanks ON BloodUnits.bloodbank_id = BloodBanks.License_id;
-
+go
+select * from [bloodunitdetails]
 go
 -- view to generate report on what blood banks have what blood units available
 CREATE VIEW vw_BloodUnitReport
@@ -95,6 +99,62 @@ WHERE
     RowNum = 1
 ORDER BY 
     Patient_Name;
+go
 
-
-
+CREATE VIEW DiseaseBloodAvailability AS
+WITH FilteredPatients AS (
+    SELECT
+        P.name AS Patient_Name,
+        P.CNIC AS Patient_CNIC,
+        P.Disease_or_Emergency AS Patient_Disease,
+        P.Blood_Group AS Required_Blood_Type
+    FROM
+        Patients P
+    WHERE
+        P.Disease_or_Emergency IN ('Thalassemia', 'Leukemia', 'Lymphoma', 'Multiple Myeloma', 'Hemophilia')
+),
+DiseaseStatistics AS (
+    SELECT
+        Patient_Disease,
+        COUNT(*) AS DiseaseCount,
+        COUNT(*) * 100.0 / SUM(COUNT(*)) OVER () AS DiseasePercentage
+    FROM
+        FilteredPatients
+    GROUP BY
+        Patient_Disease
+),
+UniqueBloodUnits AS (
+    SELECT DISTINCT
+        BU.Blood_Group,
+        BU.BloodUnit_id,
+        BU.BloodCell_id,
+        BC.BloodCell_Type,
+        BB.License_id AS Bank_id,
+        BB.Name AS BankName,
+        BB.City
+    FROM
+        BloodUnits BU
+    JOIN
+        BloodBanks BB ON BU.bloodbank_id = BB.License_id
+    JOIN
+        BloodCellTypes BC ON BU.BloodCell_id = BC.BloodCell_id
+)
+SELECT DISTINCT
+    DS.Patient_Disease,
+    DS.DiseaseCount,
+    DS.DiseasePercentage,
+    BU.Blood_Group AS Required_Blood_Type,
+    BU.BloodCell_Type AS Required_Blood_Cell_Type,
+    BU.BloodUnit_id,
+    BU.Bank_id,
+    BU.BankName,
+    BU.City
+FROM
+    DiseaseStatistics DS
+JOIN
+    FilteredPatients FP ON DS.Patient_Disease = FP.Patient_Disease
+JOIN
+    UniqueBloodUnits BU ON FP.Required_Blood_Type = BU.Blood_Group;
+	---------Testing View----------------------------
+	select * from DiseaseBloodAvailability
+	where City= 'Lahore'
